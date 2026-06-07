@@ -184,7 +184,6 @@
 </div>
 
 <script>
-// ===================== ВСЕ 90 ВОПРОСОВ =====================
 const ORIGINAL_QUESTIONS = [
     { text: "Артерии среднего и мелкого калибра - это артерии", answers: ["мышечного типа", "эластического типа", "смешанного типа", "эпителиального типа"] },
     { text: "Для диагностики острого панкреатита в сыворотке крови исследуют активность", answers: ["альфа-амилазы", "лактатдегидрогеназы", "кислой фосфатазы", "альдолазы"] },
@@ -277,7 +276,6 @@ const ORIGINAL_QUESTIONS = [
     { text: "Ферментацию глюкозы в среде Клиглера определяют по", answers: ["изменению цвета среды в столбике", "почернению по ходу укола", "цвет среды не меняется", "изменению цвета всей среды"] },
     { text: "Скос со средой Клиглера при росте на нем энтеропатогенной кишечной палочки выглядит следующим образом", answers: ["изменяется цвет всей среды с разрывом её или пузырьками газа", "изменяется цвет всей среды", "изменяется цвет столбика с разрывом среды или пузырьками газа", "изменяется цвет столбика"] }
 ];
-// ==========================================================
 
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -323,13 +321,13 @@ function escapeHtml(str) {
 function updateProgress() {
     if (isFinished) {
         const total = currentQuestions.length;
-        questionCounterSpan.innerText = `✅ Завершено ${total}/${total}`;
+        questionCounterSpan.innerText = '✅ Завершено ' + total + '/' + total;
         progressFill.style.width = '100%';
         return;
     }
     const total = currentQuestions.length;
     const answeredCount = currentQuestions.filter(q => q.isAnswered === true).length;
-    questionCounterSpan.innerText = `Вопрос ${currentIndex+1} / ${total} (отвечено: ${answeredCount})`;
+    questionCounterSpan.innerText = 'Вопрос ' + (currentIndex+1) + '/' + total + ' (отвечено: ' + answeredCount + ')';
     const percent = (answeredCount / total) * 100;
     progressFill.style.width = percent + '%';
 }
@@ -359,7 +357,7 @@ function goNext() {
     
     const q = currentQuestions[currentIndex];
     if (!q.isAnswered) {
-        alert('⚠️ Пожалуйста, выберите вариант ответа');
+        alert('Пожалуйста, выберите вариант ответа');
         return;
     }
     
@@ -391,24 +389,23 @@ function renderResultScreen() {
     const percent = Math.round((correctCount / total) * 100);
     
     let emoji = '';
-    if (percent === 100) emoji = '🏆 Идеально!';
-    else if (percent >= 70) emoji = '👍 Хороший результат!';
-    else if (percent >= 50) emoji = '📚 Неплохо, повторите материал';
-    else emoji = '📖 Попробуйте ещё раз';
+    if (percent === 100) emoji = 'Идеально!';
+    else if (percent >= 70) emoji = 'Хороший результат!';
+    else if (percent >= 50) emoji = 'Неплохо, повторите материал';
+    else emoji = 'Попробуйте ещё раз';
     
-    const resultHtml = `
-        <div class="question-card">
-            <div class="question-text" style="font-size: 1.4rem;">📊 Результат теста</div>
-            <div class="result-area">
-                <div class="result-score">${correctCount} / ${total}</div>
-                <div style="font-size:1.2rem; margin: 10px 0;">${percent}% правильных ответов</div>
-                <div style="margin: 5px 0 15px;">${emoji}</div>
-                <button id="restartFromResultBtn" class="restart-btn">🔄 Пройти тест заново</button>
-            </div>
-        </div>
-    `;
+    const resultHtml = '<div class="question-card">' +
+        '<div class="question-text" style="font-size: 1.4rem;">Результат теста</div>' +
+        '<div class="result-area">' +
+        '<div class="result-score">' + correctCount + ' / ' + total + '</div>' +
+        '<div style="font-size:1.2rem; margin: 10px 0;">' + percent + '% правильных ответов</div>' +
+        '<div style="margin: 5px 0 15px;">' + emoji + '</div>' +
+        '<button id="restartFromResultBtn" class="restart-btn">Пройти тест заново</button>' +
+        '</div></div>';
+    
     dynamicContainer.innerHTML = resultHtml;
-    document.getElementById('restartFromResultBtn')?.addEventListener('click', () => initTest());
+    const restartBtn = document.getElementById('restartFromResultBtn');
+    if (restartBtn) restartBtn.addEventListener('click', function() { initTest(); });
 }
 
 function renderCurrentQuestion() {
@@ -435,45 +432,48 @@ function renderCurrentQuestion() {
                 additionalClass += ' correct-feedback';
             }
         }
-        answersHtml += `<div class="answer-option ${additionalClass}" data-opt-index="${i}">${escapeHtml(q.answerOptions[i])}</div>`;
+        answersHtml += '<div class="answer-option ' + additionalClass + '" data-opt-index="' + i + '">' + escapeHtml(q.answerOptions[i]) + '</div>';
     }
     
     let feedbackNote = '';
     if (isAnswered) {
         const isCorrect = q.answerOptions[q.userSelectedIdx] === q.correctAnswer;
         if (isCorrect) {
-            feedbackNote = `<div class="feedback-note" style="background:#dff0e4; border-left-color:#2e7d32;">✅ Верно! Правильный ответ: ${escapeHtml(q.correctAnswer)}</div>`;
+            feedbackNote = '<div class="feedback-note" style="background:#dff0e4; border-left-color:#2e7d32;"> Верно! Правильный ответ: ' + escapeHtml(q.correctAnswer) + '</div>';
         } else {
-            feedbackNote = `<div class="feedback-note" style="background:#ffe6e6; border-left-color:#c62828;">❌ Неверно. Правильный ответ: ${escapeHtml(q.correctAnswer)}</div>`;
+            feedbackNote = '<div class="feedback-note" style="background:#ffe6e6; border-left-color:#c62828;"> Неверно. Правильный ответ: ' + escapeHtml(q.correctAnswer) + '</div>';
         }
     }
     
-    const html = `
-        <div class="question-card">
-            <div class="question-text">${escapeHtml(q.text)}</div>
-            <div class="answers-list" id="answersList">
-                ${answersHtml}
-            </div>
-            ${feedbackNote}
-        </div>
-        <div class="nav-buttons">
-            <button id="prevBtn" ${currentIndex === 0 ? 'disabled' : ''}>◀ Назад</button>
-            <button id="nextBtn" ${currentIndex === currentQuestions.length-1 ? 'style="background:#2c7da0;"' : ''}>${currentIndex === currentQuestions.length-1 ? '🏁 Завершить' : 'Далее ▶'}</button>
-        </div>
-    `;
+    const nextBtnText = (currentIndex === currentQuestions.length - 1) ? 'Завершить' : 'Далее';
+    const nextBtnStyle = (currentIndex === currentQuestions.length - 1) ? 'style="background:#2c7da0;"' : '';
+    
+    const html = '<div class="question-card">' +
+        '<div class="question-text">' + escapeHtml(q.text) + '</div>' +
+        '<div class="answers-list" id="answersList">' + answersHtml + '</div>' +
+        feedbackNote +
+        '</div>' +
+        '<div class="nav-buttons">' +
+        '<button id="prevBtn"' + (currentIndex === 0 ? ' disabled' : '') + '> Назад</button>' +
+        '<button id="nextBtn" ' + nextBtnStyle + '>' + nextBtnText + '</button>' +
+        '</div>';
     
     dynamicContainer.innerHTML = html;
     
-    document.querySelectorAll('.answer-option').forEach(div => {
-        div.addEventListener('click', () => {
+    const answerDivs = document.querySelectorAll('.answer-option');
+    for (let i = 0; i < answerDivs.length; i++) {
+        answerDivs[i].addEventListener('click', function() {
             if (currentQuestions[currentIndex].isAnswered) return;
-            const idx = parseInt(div.dataset.optIndex);
+            const idx = parseInt(this.getAttribute('data-opt-index'));
             selectAnswer(idx);
         });
-    });
+    }
     
-    document.getElementById('prevBtn')?.addEventListener('click', goPrev);
-    document.getElementById('nextBtn')?.addEventListener('click', goNext);
+    const prevButton = document.getElementById('prevBtn');
+    if (prevButton) prevButton.addEventListener('click', goPrev);
+    
+    const nextButton = document.getElementById('nextBtn');
+    if (nextButton) nextButton.addEventListener('click', goNext);
 }
 
 function initTest() {
